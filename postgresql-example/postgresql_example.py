@@ -41,12 +41,15 @@ def handle_words(name=None):
 def display_find(name=None):
     cur = conn.cursor()
     cur.execute("""SELECT word, definition FROM python""")
+    cursor_obj = cur.fetchall()
 
-    cursor_obj = [dict
-    ((cur.description[col][0], row) for col, row in enumerate(q_results))
-    for q_results in cur.fetchall()]
+    labels = [column[0] for column in cur.description]
+    results_list = []
 
-    return json.dumps(cursor_obj)
+    for row in cursor_obj:
+        results_list.append(dict(zip(labels, row)))
+
+    return json.dumps(results_list)
 
 if __name__ == "__main__":
     app.run()
