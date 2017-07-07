@@ -13,11 +13,12 @@ app = Flask(__name__)
 
 # connection string and initialization
 MONGODB_URL = os.environ['MONGODB_URL']
-client = MongoClient(MONGODB_URL,ssl_cert_reqs=ssl.CERT_NONE)
+PATH_TO_CERT = os.environ['PATH_TO_CERT']
+client = MongoClient(MONGODB_URL,ssl=True,ssl_ca_certs=PATH_TO_CERT)
 
 # databse/collection names
 db = client.grand_tour
-collection = db.python
+collection = db.words
 
 @app.route('/')
 # top-level page display
