@@ -21,26 +21,31 @@ conn = psycopg2.connect(
     database='grand_tour')
 
 @app.route('/')
-# top-level page display
+# top-level page display, creates table if it doesn't exist 
 def serve_page(name=None):
+    cur = conn.cursor()
+    cur.execute("""CREATE TABLE IF NOT EXISTS words (
+		id serial primary key,
+		word varchar(256) NOT NULL,
+		definition varchar(256) NOT NULL) """)
     return render_template('index.html', name=name)
 
 @app.route('/words', methods=['PUT'])
-# triggers on hitting the 'Add' button; inserts word/definition into collection
+# triggers on hitting the 'Add' button; inserts word/definition into table
 def handle_words(name=None):
     cur = conn.cursor()
-    cur.execute("""INSERT INTO python (word, definition)
+    cur.execute("""INSERT INTO words (word, definition)
         VALUES (%s, %s)""",(request.form['word'],request.form['definition']))
     conn.commit()
     return "ECHO: PUT\n"
 
 @app.route('/words', methods=['GET'])
-# query for all the words in the collection,\
+# query for all the rows in the table,\
 # makes a dictionary object from the column names and the results,\
 # makes json from the dict for display on the page.
 def display_find(name=None):
     cur = conn.cursor()
-    cur.execute("""SELECT word, definition FROM python""")
+    cur.execute("""SELECT word, definition FROM words""")
     cursor_obj = cur.fetchall()
 
     labels = [column[0] for column in cur.description]
