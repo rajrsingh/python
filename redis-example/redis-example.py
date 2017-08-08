@@ -17,7 +17,6 @@ r = redis.StrictRedis(
     host=parsed.hostname,
     port=parsed.port,
     password=parsed.password,
-    db=3,
     decode_responses=True)
 
 
@@ -33,7 +32,7 @@ def handle_words(name=None):
     return "ECHO: PUT\n"
 
 @app.route('/words', methods=['GET'])
-# query for all the words in to the hash, returns as json for display on the page.
+# query for all the words in the hash, lists keys/values, zips keys/values, returns as json for display on the page.
 def display_find(name=None):
     cursor_obj = r.hgetall('words')
 
