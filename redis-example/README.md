@@ -11,7 +11,7 @@ Stores word/definition pairs as keys/values in a hash map named 'words'. The dri
 * json
 
 #### Connection String
-The connection string provided by your Compose Redis deployment should go into an environment variable `REDIS_URL`.
+The connection string provided by your Compose Redis deployment should go into an environment variable `COMPOSE_REDIS_URL`.
 
 #### Running the Application
 To run the app from the command-line, set and environment variable `FLASK_APP=redis-example.py`, and use the `flask run` command in the same directory as the python file.
