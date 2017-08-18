@@ -11,13 +11,16 @@ import psycopg2
 app = Flask(__name__)
 
 # connection string and db connection initialization
-POSTGRESQL_URL = os.environ['POSTGRESQL_URL']
-parsed = urlparse(POSTGRESQL_URL)
+COMPOSE_POSTGRESQL_URL = os.environ['COMPOSE_POSTGRESQL_URL']
+PATH_TO_POSTGRESQL_CERT = os.environ['PATH_TO_POSTGRESQL_CERT']
+parsed = urlparse(COMPOSE_POSTGRESQL_URL)
 conn = psycopg2.connect(
     host=parsed.hostname,
     port=parsed.port,
     user=parsed.username,
     password=parsed.password,
+    sslmode='verify-ca',
+    sslrootcert=PATH_TO_POSTGRESQL_CERT,
     database='grand_tour')
 
 @app.route('/')
