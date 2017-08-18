@@ -5,6 +5,7 @@ from flask import request
 from elasticsearch import Elasticsearch
 
 import os
+import certifi
 from urllib.parse import urlparse
 import json
 
@@ -13,7 +14,6 @@ app = Flask(__name__)
 
 # connection string and initialization
 COMPOSE_ELASTICSEARCH_URL = os.environ['COMPOSE_ELASTICSEARCH_URL']
-PATH_TO_ELASTICSEARCH_CERT = os.environ['PATH_TO_ELASTICSEARCH_CERT']
 parsed = urlparse(COMPOSE_ELASTICSEARCH_URL)
 
 es = Elasticsearch(
@@ -21,8 +21,7 @@ es = Elasticsearch(
     http_auth = (parsed.username, parsed.password),
     port = parsed.port,
     use_ssl = True,
-    verify_certs = False,
-    ca_certs = PATH_TO_ELASTICSEARCH_CERT
+    verify_certs = True
 )
 
 
@@ -43,7 +42,6 @@ def handle_words(name=None):
 # query for all the words in the index, returns as json for display on the page.
 def display_find(name=None):
     res = es.search(index="words", doc_type="word", body={})
-
     hit_list = (res['hits']['hits'])
 
     words_list = []
