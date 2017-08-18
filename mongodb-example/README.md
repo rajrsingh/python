@@ -2,6 +2,8 @@
 
 #### Package Dependencies
 * pymongo
+* flask
+* os
 * ssl
 * bson
 

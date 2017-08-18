@@ -1,8 +1,5 @@
 ## Connecting to RethinkDB from a Python Flask App
 
-#### Summary
-Stores word/definition pairs in the 'grand_tour' database, in the 'words' table. Both the database and the table have to be created prior to running the code. Retrieves all words from the table, lists them, then returns a JSON object to display on the page.
-
 #### Package Dependencies
 * flask
 * rethinkdb
