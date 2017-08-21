@@ -1,26 +1,27 @@
+import json
+import os
+from urllib.parse import urlparse
+
 from flask import Flask
 from flask import render_template
 from flask import request
 
-import os
-from urllib.parse import urlparse
-import json
 
 import psycopg2
 
 app = Flask(__name__)
 
 # connection string and db connection initialization
-COMPOSE_POSTGRESQL_URL = os.environ['COMPOSE_POSTGRESQL_URL']
-PATH_TO_POSTGRESQL_CERT = os.environ['PATH_TO_POSTGRESQL_CERT']
-parsed = urlparse(COMPOSE_POSTGRESQL_URL)
+compose_postgresql_url = os.environ['COMPOSE_POSTGRESQL_URL']
+path_to_postgresql_cert = os.environ['PATH_TO_POSTGRESQL_CERT']
+parsed = urlparse(compose_postgresql_url)
 conn = psycopg2.connect(
     host=parsed.hostname,
     port=parsed.port,
     user=parsed.username,
     password=parsed.password,
     sslmode='verify-ca',
-    sslrootcert=PATH_TO_POSTGRESQL_CERT,
+    sslrootcert=path_to_postgresql_cert,
     database='grand_tour')
 
 @app.route('/')
