@@ -12,9 +12,9 @@ from bson import json_util
 app = Flask(__name__)
 
 # connection string and initialization
-MONGODB_URL = os.environ['MONGODB_URL']
-PATH_TO_CERT = os.environ['PATH_TO_CERT']
-client = MongoClient(MONGODB_URL,ssl=True,ssl_ca_certs=PATH_TO_CERT)
+mongodb_url = os.environ['COMPOSE_MONGODB_URL']
+path_to_cert = os.environ['PATH_TO_MONGODB_CERT']
+client = MongoClient(mongodb_url,ssl=True,ssl_ca_certs=path_to_cert)
 
 # databse/collection names
 db = client.grand_tour
