@@ -13,8 +13,8 @@ import json
 app = Flask(__name__)
 
 # connection string and initialization
-COMPOSE_ELASTICSEARCH_URL = os.environ['COMPOSE_ELASTICSEARCH_URL']
-parsed = urlparse(COMPOSE_ELASTICSEARCH_URL)
+compose_elasticsearch_url = os.environ['COMPOSE_ELASTICSEARCH_URL']
+parsed = urlparse(compose_elasticsearch_url)
 
 es = Elasticsearch(
     [parsed.hostname],
