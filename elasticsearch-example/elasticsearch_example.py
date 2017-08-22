@@ -24,6 +24,8 @@ es = Elasticsearch(
     verify_certs = True
 )
 
+if not es.indices.exists(index="words"):
+    es.indices.create(index="words")
 
 @app.route('/')
 # top-level page display
