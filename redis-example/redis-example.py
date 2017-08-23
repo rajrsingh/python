@@ -11,8 +11,8 @@ import redis
 app = Flask(__name__)
 
 # connection string and initialization
-COMPOSE_REDIS_URL = os.environ['COMPOSE_REDIS_URL']
-parsed = urlparse(COMPOSE_REDIS_URL)
+compose_redis_url = os.environ['COMPOSE_REDIS_URL']
+parsed = urlparse(compose_redis_url)
 r = redis.StrictRedis(
     host=parsed.hostname,
     port=parsed.port,

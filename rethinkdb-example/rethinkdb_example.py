@@ -11,16 +11,28 @@ import rethinkdb as r
 app = Flask(__name__)
 
 # connection string and initialization
-COMPOSE_RETHINKDB_URL = os.environ['COMPOSE_RETHINKDB_URL']
-PATH_TO_RETHINKDB_CERT = os.environ['PATH_TO_RETHINKDB_CERT']
-parsed = urlparse(COMPOSE_RETHINKDB_URL)
+compose_rethinkdb_url = os.environ['COMPOSE_RETHINKDB_URL']
+path_to_rethinkdb_cert = os.environ['PATH_TO_RETHINKDB_CERT']
+
+parsed = urlparse(compose_rethinkdb_url)
 conn = r.connect(
     host=parsed.hostname,
     port=parsed.port,
     user=parsed.username,
     password=parsed.password,
-    ssl={'ca_certs': PATH_TO_RETHINKDB_CERT})
+    ssl={'ca_certs': path_to_rethinkdb_cert}
+   )
 
+
+try:
+    r.db_create('grand_tour').run(conn)
+    conn.use("grand_tour")
+    r.table_create('words',shards=1,replicas=3).run(conn)
+except r.ReqlRuntimeError:
+    # assume database or table already exists
+    pass
+
+conn.use("grand_tour")
 
 @app.route('/')
 # top-level page display
@@ -31,14 +43,12 @@ def serve_page(name=None):
 # triggers on hitting the 'Add' button; inserts word/definition into table
 def handle_words(name=None):
     new_word = {"word":request.form['word'], "definition":request.form['definition']}
-    conn.use("grand_tour")
     r.table("words").insert(new_word).run(conn)
     return "ECHO: PUT\n"
 
 @app.route('/words', methods=['GET'])
 # query for all the words in the table, returns as json for display on the page.
 def display_find(name=None):
-    conn.use("grand_tour")
     cursor_obj = r.table("words").pluck("word", "definition").run(conn)
     word_list = list(cursor_obj)
     return json.dumps(word_list)
