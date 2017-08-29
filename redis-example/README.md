@@ -1,14 +1,11 @@
 ## Connecting to Redis from a Python Flask App
 
-#### Summary
-Stores word/definition pairs as keys/values in a hash map named 'words'. The driver defualts to database '0' since none is specified in the connection string. Gets all existing words, creates a JSON object, and returns all words to display on the page.
-
 #### Package Dependencies
+* os
+* urllib
+* json  
 * flask
 * redis
-* urllib
-* os
-* json
 
 #### Connection String
 The connection string provided by your Compose Redis deployment should go into an environment variable `COMPOSE_REDIS_URL`.

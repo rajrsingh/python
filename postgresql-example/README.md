@@ -1,11 +1,11 @@
 ## Connecting to PostgreSQL from a Python Flask App
 
 #### Package Dependencies
-* psycopg2
-* flask
 * os
 * urllib
 * json
+* psycopg2
+* flask
 
 #### Connection String
 The connection string provided by your Compose PostgreSQL deployment should go into an environment variable `COMPOSE_POSTGRES_URL`.

@@ -1,10 +1,10 @@
 ## Connecting to MongoDB from a Python Flask App
 
 #### Package Dependencies
-* pymongo
-* flask
 * os
 * ssl
+* flask
+* pymongo
 * bson
 
 #### Connection String

@@ -1,11 +1,11 @@
 ## Connecting to RethinkDB from a Python Flask App
 
 #### Package Dependencies
-* flask
-* rethinkdb
 * os
 * urllib
 * json
+* flask
+* rethinkdb
 
 #### Connection String and Certificate
 The connection string provided by your Compose RethinkDB deployment should go into an environment variable `COMPOSE_RETHINKDB_URL`.
