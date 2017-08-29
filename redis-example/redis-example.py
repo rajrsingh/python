@@ -1,12 +1,13 @@
-from flask import Flask
-from flask import render_template
-from flask import request
-
 import os
 from urllib.parse import urlparse
 import json
 
+from flask import Flask
+from flask import render_template
+from flask import request
+
 import redis
+
 
 app = Flask(__name__)
 
@@ -22,18 +23,19 @@ r = redis.StrictRedis(
 
 @app.route('/')
 # top-level page display
-def serve_page(name=None):
-    return render_template('index.html', name=name)
+def serve_page():
+    return render_template('index.html')
 
 @app.route('/words', methods=['PUT'])
 # triggers on hitting the 'Add' button; inserts word/definition into a hash
-def handle_words(name=None):
+def handle_words():
     r.hset("words", request.form['word'], request.form['definition'])
     return "ECHO: PUT\n"
 
+
 @app.route('/words', methods=['GET'])
 # query for all the words in the hash, lists keys/values, zips keys/values, returns as json for display on the page.
-def display_find(name=None):
+def display_find():
     cursor_obj = r.hgetall('words')
 
     keys_list = list(cursor_obj.keys())
