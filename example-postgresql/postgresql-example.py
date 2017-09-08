@@ -20,7 +20,7 @@ conn = psycopg2.connect(
     port=parsed.port,
     user=parsed.username,
     password=parsed.password,
-    sslmode='verify-ca',
+    sslmode='require',
     sslrootcert=path_to_postgresql_cert,
     database='grand_tour')
 
