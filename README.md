@@ -1,7 +1,7 @@
 # The Grand Tour - Python
 A set of example applications that will add word/definition pairs to a database running on Compose.
 
-This repo contains the apps written in Python 3.6.0 and uses Flask. It is intended to run locally, for example and experimentation purposes only.
+This repo contains the apps written in Python 3.6.0 and uses Flask.
 
 ## Running the Example
 To run from the command-line:
