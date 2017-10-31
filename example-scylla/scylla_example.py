@@ -14,10 +14,15 @@ from cassandra.auth import PlainTextAuthProvider
 
 app = Flask(__name__)
 
-# connection string and certificate path
+# connection strings, parsing, and certificate path
 compose_scylla_url = os.environ['COMPOSE_SCYLLA_URL']
+url1,url2,url3 = compose_scylla_url.split(",")
+
+cstr1 = urlparse(url1)
+cstr2 = urlparse(url2)
+cstr3 = urlparse(url3)
+
 path_to_scylla_cert = os.environ['PATH_TO_SCYLLA_CERT']
-parsed = urlparse(compose_scylla_url)
 
 # Optional dict with absolute path to CA certificate and the defualt Cassandra protocol ssl version.
 ssl_options = {
@@ -27,32 +32,31 @@ ssl_options = {
 
 # Creates class object that supplies username/password in plain-text.
 auth_provider = PlainTextAuthProvider(
-                username=parsed.username,
-                password=parsed.password)
+                username=cstr1.username,
+                password=cstr1.password)
 
 # Handles connection setup and information
 cluster = Cluster(
-            contact_points = [parsed.hostname],
-            port = parsed.port,
+            contact_points = [cstr1.hostname,cstr2.hostname,cstr3.hostname],
+            port = cstr1.port,
             auth_provider = auth_provider,
             ssl_options=ssl_options)
 
 # Starts session, connects to a keyspace
 session = cluster.connect("grand_tour")
 
-
 @app.route('/')
-# top-level page display, starts session, connects to a keyspace
-def serve_page(name=None):
+# top-level page display, creates table on first run
+def serve_page():
     session.execute("""CREATE TABLE IF NOT EXISTS words (
 		id UUID primary key,
 		word text,
 		definition text) """)
-    return render_template('index.html', name=name)
+    return render_template('index.html')
 
 @app.route('/words', methods=['PUT'])
 # triggers on hitting the 'Add' button; inserts word/definition into table
-def handle_words(name=None):
+def handle_words():
 
     new_word = session.prepare("""
     INSERT INTO words(id, word, definition)
@@ -63,7 +67,7 @@ def handle_words(name=None):
 
 @app.route('/words', methods=['GET'])
 # query for all the words in the table, returns as json for display on the page.
-def display_find(name=None):
+def display_find():
     get_words = session.execute("""SELECT word, definition FROM words""")
     
     word_list = []

@@ -10,7 +10,7 @@
 * cassandra
 
 #### Connection String and Certificate
-The connection string provided by your Compose RethinkDB deployment should go into an environment variable `COMPOSE_SCYLLA_URL`.
+The three connection strings provided by your Compose Scylla deployment should be comma separated and go into an environment variable `COMPOSE_SCYLLA_URL`. The code will parse the hostnames, port, and credentials. 
 Download a copy of the certificate and put it's path in an environment variable `PATH_TO_SCYLLA_CERT`
 
 #### Running the Application
