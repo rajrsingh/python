@@ -11,7 +11,7 @@ import pymysql.cursors
 
 app = Flask(__name__)
 
-# connection string and initialization
+# connection string and initialization - sets cursor class to handle python dicts
 compose_mysql_url = os.environ['COMPOSE_MYSQL_URL']
 parsed = urlparse(compose_mysql_url)
 
@@ -25,7 +25,7 @@ conn = pymysql.connect(
 
 
 @app.route('/')
-# top-level page display
+# top-level page display, creates mysql table on first run
 def serve_page():
     cur = conn.cursor()
     cur.execute("""CREATE TABLE IF NOT EXISTS words (
@@ -36,7 +36,7 @@ def serve_page():
 
 
 @app.route('/words', methods=['PUT'])
-# triggers on hitting the 'Add' button; inserts word/definition into collection
+# triggers on hitting the 'Add' button; inserts word/definition into 'words' table
 def handle_words():
     cur = conn.cursor()
     cur.execute("""INSERT INTO words (word, definition)
@@ -46,7 +46,7 @@ def handle_words():
 
 
 @app.route('/words', methods=['GET'])
-# query for all the words in the collection, returns as json for display on the page.
+# query for all the words in the table, returns as json for display on the page.
 def display_find():
     cur = conn.cursor()
     cur.execute("""SELECT word, definition FROM words""")
