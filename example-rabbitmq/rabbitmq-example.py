@@ -1,6 +1,5 @@
 import os
 from urllib.parse import urlparse
-import json
 
 from flask import Flask
 from flask import render_template
@@ -55,7 +54,7 @@ def receive_message():
     channel = connection.channel()
     channel.queue_declare(queue='grand_tour')
 
-    method_frame, properties, body = channel.basic_get(queue = 'grand_tour',no_ack=True)
+    method_frame, properties, body = channel.basic_get(queue = 'grand_tour', no_ack=True)
     if method_frame == None:
         return "{--No Messages in Queue--}"
     else:
