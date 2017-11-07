@@ -11,13 +11,17 @@ import redis
 
 app = Flask(__name__)
 
+
 # connection string and initialization
 compose_redis_url = os.environ['COMPOSE_REDIS_URL']
+
+ssl_wanted=compose_redis_url.startswith("rediss:")
 parsed = urlparse(compose_redis_url)
 r = redis.StrictRedis(
     host=parsed.hostname,
     port=parsed.port,
     password=parsed.password,
+    ssl=ssl_wanted,
     decode_responses=True)
 
 
