@@ -17,8 +17,8 @@ app = Flask(__name__)
 mongodb_url = os.environ['COMPOSE_MONGODB_URL']
 path_to_cert = os.environ['PATH_TO_MONGODB_CERT']
 client = MongoClient(
-    mongodb_url, 
-    ssl=True, 
+    mongodb_url,
+    ssl=True,
     ssl_ca_certs=path_to_cert
 )
 
@@ -37,7 +37,7 @@ def serve_page():
 def handle_words():
     new_word = {"word":request.form['word'], "definition":request.form['definition']}
     doc_id = collection.insert_one(new_word).inserted_id
-    return "ECHO: PUT\n"
+    return ('', 204)
 
 
 @app.route('/words', methods=['GET'])
