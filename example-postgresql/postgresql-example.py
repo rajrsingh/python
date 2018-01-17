@@ -40,9 +40,11 @@ def serve_page():
 # triggers on hitting the 'Add' button; inserts word/definition into table
 def handle_words():
     cur = conn.cursor()
+    
     cur.execute("""INSERT INTO words (word, definition)
         VALUES (%s, %s)""", (request.form['word'], request.form['definition']))
     conn.commit()
+    
     return ('', 204)
 
 
@@ -50,15 +52,19 @@ def handle_words():
 # queries and formats results for display on page
 def display_select():
     cur = conn.cursor()
+    
     # SQL query for all the rows in the table, stores rows in an object
     cur.execute("""SELECT word, definition FROM words""")
     cursor_obj = cur.fetchall()
+    
     # grabs column names from the table
     labels = [column[0] for column in cur.description]
+    
     # makes a list from the dict of the zip of column names and the results object
     results_list = []
     for row in cursor_obj:
         results_list.append(dict(zip(labels, row)))
+    
     # makes json from the list for display on the page
     return json.dumps(results_list)
 

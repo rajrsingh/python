@@ -32,18 +32,19 @@ ssl_options = {
 
 # Creates class object that supplies username/password in plain-text.
 auth_provider = PlainTextAuthProvider(
-                username=cstr1.username,
-                password=cstr1.password)
+    username=cstr1.username,
+    password=cstr1.password)
 
 # Handles connection setup and information
 cluster = Cluster(
-            contact_points = [cstr1.hostname,cstr2.hostname,cstr3.hostname],
-            port = cstr1.port,
-            auth_provider = auth_provider,
-            ssl_options=ssl_options)
+    contact_points = [cstr1.hostname,cstr2.hostname,cstr3.hostname],
+    port = cstr1.port,
+    auth_provider = auth_provider,
+    ssl_options=ssl_options)
 
 # Starts session, connects to a keyspace
 session = cluster.connect("grand_tour")
+
 
 @app.route('/')
 # top-level page display, creates table on first run
@@ -54,31 +55,35 @@ def serve_page():
 		definition text) """)
     return render_template('index.html')
 
+
 @app.route('/words', methods=['PUT'])
 # triggers on hitting the 'Add' button; inserts word/definition into table
 def handle_words():
-
-    new_word = session.prepare("""
-    INSERT INTO words(id, word, definition)
-    VALUES (?, ?, ?)""")
-
+    # INSERT statement
+    new_word = session.prepare("""INSERT INTO words(id, word, definition) VALUES(?, ?, ?)""")
+    # creates new entry, executes INSERT
     session.execute(new_word, [uuid.uuid4(), request.form['word'], request.form['definition']])
-    return "ECHO: PUT\n"
+    return ('', 204)
+
 
 @app.route('/words', methods=['GET'])
-# query for all the words in the table, returns as json for display on the page.
+# queries and formats results for display on page
 def display_find():
+    # query for all the words in the table
     get_words = session.execute("""SELECT word, definition FROM words""")
     
+    # creates two lists from results, one for the words, the other for defintions
     word_list = []
     definition_list =[]
-    
     for entry in get_words:
         word_list.append(entry[0])
         definition_list.append(entry[1])
-
-    results_list = [{'word': word, 'definition': definition} for word, definition in zip(word_list, definition_list)]
-             
+    
+    # create an object containing formatted data from the words and definition lists zipped together
+    results_list = [{'word': word, 'definition': definition} 
+        for word, definition in zip(word_list, definition_list)]
+    
+    # returns the object as JSON for display on page        
     return json.dumps(results_list)
 
     
