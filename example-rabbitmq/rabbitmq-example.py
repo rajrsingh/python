@@ -9,7 +9,7 @@ import pika
 
 app = Flask(__name__)
 
-# connection string and initialization
+# connection string, auth, and connection parameters set
 compose_rabbitmq_url = os.environ['COMPOSE_RABBITMQ_URL']
 parsed = urlparse(compose_rabbitmq_url)
 
@@ -24,7 +24,12 @@ parameters = pika.ConnectionParameters(
     ssl=True
 )
 
+# establish a connection, open an ampq channel, specifiy the exchange
 connection = pika.BlockingConnection(parameters)
+channel = connection.channel()
+channel.exchange_declare(exchange='grand_tour',
+    exchange_type='direct',
+    durable=True)
 
 
 @app.route('/')
@@ -38,14 +43,11 @@ def serve_page():
 def send_message():
     # makes a message from the field in the page
     msg = request.form['message']
-    # establishes a connection
-    channel = connection.channel()
-    # selects or creates the message queue
-    channel.queue_declare(queue='grand_tour')
+    
     # pushes the message onto the queue
     channel.basic_publish(
-        exchange='',
-        routing_key='grand_tour',
+        exchange='grand_tour',
+        routing_key='messages',
         body=msg)
     return msg
 
@@ -53,12 +55,17 @@ def send_message():
 @app.route('/message', methods=['GET'])
 # triggers on hitting the 'receive' button; retrieves a message from the queue
 def receive_message():
-    # establishes a connection
-    channel = connection.channel()
-    # selects or creates the message queue
-    channel.queue_declare(queue='grand_tour')
+    # creates the message queue to consume the messages in the exchange
+    channel.queue_declare(queue='words')
+    
+    # tells the queue to pay attenetion to the exchange and specifically ones with the routing key
+    channel.queue_bind(exchange='grand_tour',
+        queue='words',
+        routing_key='messages')
+    
     # retrieves a message from the queue, stores its parts
-    method_frame, properties, body = channel.basic_get(queue = 'grand_tour', no_ack=True)
+    method_frame, properties, body = channel.basic_get(queue = 'words', no_ack=True)
+    
     # returns message body or 'no message' for display on page
     if method_frame == None:
         return "{--No Messages in Queue--}"
