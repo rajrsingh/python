@@ -47,7 +47,7 @@ def send_message():
     # pushes the message onto the queue
     channel.basic_publish(
         exchange='grand_tour',
-        routing_key='messages',
+        routing_key='python-msg',
         body=msg)
     return msg
 
@@ -58,10 +58,10 @@ def receive_message():
     # creates the message queue to consume the messages in the exchange
     channel.queue_declare(queue='words')
     
-    # tells the queue to pay attenetion to the exchange and specifically ones with the routing key
+    # tells the queue to pay attenetion to the exchange and messages with the routing key
     channel.queue_bind(exchange='grand_tour',
         queue='words',
-        routing_key='messages')
+        routing_key='python-msg')
     
     # retrieves a message from the queue, stores its parts
     method_frame, properties, body = channel.basic_get(queue = 'words', no_ack=True)
