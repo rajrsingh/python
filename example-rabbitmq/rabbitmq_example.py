@@ -16,7 +16,7 @@ compose_rabbitmq_url = os.environ['COMPOSE_RABBITMQ_URL']
 parsed = urlparse(compose_rabbitmq_url)
 
 credentials = pika.PlainCredentials(parsed.username, parsed.password)
-vhost = parsed.path.replace("/","")
+vhost = parsed.path.replace("/", "")
 
 parameters = pika.ConnectionParameters(
     host=parsed.hostname,
