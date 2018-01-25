@@ -1,3 +1,5 @@
+"""Redis example for Compose Python Grand Tour"""
+
 import os
 from urllib.parse import urlparse
 import json

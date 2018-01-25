@@ -1,3 +1,6 @@
+"""MongoDB example for Compose Python Grand Tour"""
+
+
 import os
 import ssl
 

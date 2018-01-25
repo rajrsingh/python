@@ -1,3 +1,5 @@
+"""Scylla example for Compose Python Grand Tour"""
+
 import os
 import ssl
 from urllib.parse import urlparse
