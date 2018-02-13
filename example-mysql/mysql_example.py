@@ -17,6 +17,7 @@ app = Flask(__name__)
 compose_mysql_url = os.environ['COMPOSE_MYSQL_URL']
 path_to_mysql_cert = os.environ['PATH_TO_MYSQL_CERT']
 parsed = urlparse(compose_mysql_url)
+db = parsed.path.replace("/", "")
 
 conn = mysql.connector.connect(
     host=parsed.hostname,
@@ -24,17 +25,23 @@ conn = mysql.connector.connect(
     user=parsed.username,
     password=parsed.password,
     ssl_ca=path_to_mysql_cert,
-    database='grand_tour')
+    database=db)
+
+# establishes a connection, checks for database, creates if non-existent
+cur = conn.cursor()
+cur.execute("""CREATE DATABASE IF NOT EXISTS grand_tour""")
+cur.execute("""USE grand_tour""")
+
+# checks for table, creates if non-existent
+cur.execute("""CREATE TABLE IF NOT EXISTS words (
+    id serial primary key,
+    word varchar(256) NOT NULL,
+    definition varchar(256) NOT NULL) """)
 
 
 @app.route('/')
-# top-level page display, creates table on first run
+# top-level page display
 def serve_page():
-    cur = conn.cursor()
-    cur.execute("""CREATE TABLE IF NOT EXISTS words (
-		id serial primary key,
-		word varchar(256) NOT NULL,
-		definition varchar(256) NOT NULL) """)
     return render_template('index.html')
 
 

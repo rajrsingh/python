@@ -44,17 +44,25 @@ cluster = Cluster(
     auth_provider = auth_provider,
     ssl_options=ssl_options)
 
-# Starts session, connects to a keyspace
-session = cluster.connect("grand_tour")
+# Starts session, creates keyspace on first run
+session = cluster.connect()
+session.execute("""CREATE  KEYSPACE IF NOT EXISTS grand_tour
+   WITH REPLICATION = { 
+       'class' : 'SimpleStrategy', 'replication_factor' : 3 } """)
+
+# Use keyspace
+session.execute("""USE grand_tour""")
+
+#Check for table and create on first run
+session.execute("""CREATE TABLE IF NOT EXISTS words (
+    id UUID primary key,
+    word text,
+    definition text) """)
 
 
 @app.route('/')
 # top-level page display, creates table on first run
 def serve_page():
-    session.execute("""CREATE TABLE IF NOT EXISTS words (
-		id UUID primary key,
-		word text,
-		definition text) """)
     return render_template('index.html')
 
 
@@ -63,6 +71,7 @@ def serve_page():
 def handle_words():
     # INSERT statement
     new_word = session.prepare("""INSERT INTO words(id, word, definition) VALUES(?, ?, ?)""")
+    
     # creates new entry, executes INSERT
     session.execute(new_word, [uuid.uuid4(), request.form['word'], request.form['definition']])
     return ('', 204)
