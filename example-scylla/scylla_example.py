@@ -26,7 +26,7 @@ cstr3 = urlparse(url3)
 
 path_to_scylla_cert = os.environ['PATH_TO_SCYLLA_CERT']
 
-# Optional dict with absolute path to CA certificate and the defualt Cassandra protocol ssl version.
+# Optional dict with absolute path to CA certificate and the default Cassandra protocol ssl version.
 ssl_options = {
     'ca_certs': path_to_scylla_cert,
     'ssl_version': ssl.PROTOCOL_TLSv1_2
