@@ -1,3 +1,5 @@
+"""RethinkDB example for Compose Python Grand Tour"""
+
 import os
 from urllib.parse import urlparse
 import json
@@ -24,6 +26,7 @@ conn = r.connect(
     ssl={'ca_certs': path_to_rethinkdb_cert}
 )
 
+# database initialization and table creation 
 try:
     r.db_create('grand_tour').run(conn)
     conn.use("grand_tour")
@@ -41,19 +44,28 @@ def serve_page():
 
 
 @app.route('/words', methods=['PUT'])
-# triggers on hitting the 'Add' button; inserts word/definition into table
+# triggers on hitting the 'Add' button
 def handle_words():
+    #creates new word object
     new_word = {"word":request.form['word'], "definition":request.form['definition']}
+
+    #inserts object into the table
     r.table("words").insert(new_word).run(conn)
-    return "ECHO: PUT\n"
+    return ('', 204)
 
 
 @app.route('/words', methods=['GET'])
-# query for all the words in the table, returns as json for display on the page.
+# queries and formats results for display on page
 def display_find():
+    # query for all the words in the table
     cursor_obj = r.table("words").pluck("word", "definition").run(conn)
+
+    # makes a list from the query results
     word_list = list(cursor_obj)
+
+    # returns list as a JSON object for display
     return json.dumps(word_list)
+
 
 if __name__ == "__main__":
     app.run()

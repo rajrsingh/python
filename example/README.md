@@ -1,6 +1,5 @@
 ## Generic Example App
-For use with a database type not otherwise shown.
-
+This example is just the application running without a database connection. It stores the words in a list.
 
 #### Package Dependencies
 * os
